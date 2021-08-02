@@ -112,3 +112,10 @@ plt + geom_boxplot()
 plt <- ggplot(mpg,aes(x=manufacturer,y=hwy)) 
 #add boxplot and rotate x-axis labels 45 degrees
 plt + geom_boxplot() + theme(axis.text.x=element_text(angle=45,hjust=1)) 
+
+#------------------------------------------------------------------------------------------------------------------
+#statistics
+#visualize distribution using density plot
+ggplot(mtcars,aes(x=wt)) + geom_density() 
+
+shapiro.test(mtcars$wt)
