@@ -65,3 +65,50 @@ plt + geom_bar() #plot a bar plot
 mpg_summary <- mpg %>% group_by(manufacturer) %>% summarize(Vehicle_Count=n(), .groups = 'keep') #create summary table
 plt <- ggplot(mpg_summary,aes(x=manufacturer,y=Vehicle_Count)) #import dataset into ggplot2
 plt + geom_col() #plot a bar plot
+
+#plot bar plot with labels
+plt + geom_col() + xlab("Manufacturing Company") + ylab("Number of Vehicles in Dataset") 
+
+#plot a boxplot with labels
+plt + geom_col() + xlab("Manufacturing Company") + ylab("Number of Vehicles in Dataset") + 
+  theme(axis.text.x=element_text(angle=45,hjust=1)) #rotate the x-axis label 45 degrees
+
+#create summary table
+mpg_summary <- subset(mpg,manufacturer=="toyota") %>% group_by(cyl) %>% summarize(Mean_Hwy=mean(hwy), .groups = 'keep') 
+
+#import dataset into ggplot2
+plt <- ggplot(mpg_summary,aes(x=cyl,y=Mean_Hwy)) 
+
+#generate line chart
+plt + geom_line()
+
+#add line plot with labels
+plt + geom_line() + scale_x_discrete(limits=c(4,6,8)) + scale_y_continuous(breaks = c(15:30)) 
+
+#import dataset into ggplot2
+plt <- ggplot(mpg,aes(x=displ,y=cty)) 
+
+#add scatter plot with labels
+plt + geom_point() + xlab("Engine Size (L)") + ylab("City Fuel-Efficiency (MPG)") 
+
+#import dataset into ggplot2
+plt <- ggplot(mpg,aes(x=displ,y=cty,color=class)) 
+#add scatter plot with labels
+plt + geom_point() + labs(x="Engine Size (L)", y="City Fuel-Efficiency (MPG)", color="Vehicle Class") 
+
+#import dataset into ggplot2
+plt <- ggplot(mpg,aes(x=displ,y=cty,color=class,shape=drv)) 
+
+#add scatter plot with multiple aesthetics
+plt + geom_point() + 
+  labs(x="Engine Size (L)", y="City Fuel-Efficiency (MPG)", color="Vehicle Class",shape="Type of Drive") 
+
+#import dataset into ggplot2
+plt <- ggplot(mpg,aes(y=hwy)) 
+#add boxplot
+plt + geom_boxplot() 
+
+#import dataset into ggplot2
+plt <- ggplot(mpg,aes(x=manufacturer,y=hwy)) 
+#add boxplot and rotate x-axis labels 45 degrees
+plt + geom_boxplot() + theme(axis.text.x=element_text(angle=45,hjust=1)) 
