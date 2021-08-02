@@ -61,18 +61,26 @@ all.equal(demo_table3,colnames(wide_table))
 plt <- ggplot(mpg,aes(x=class)) #import dataset into ggplot2
 plt + geom_bar() #plot a bar plot
 
+#----------------------------------------------------------------------------------------------------------------------------------------
+#create summary table
+mpg_summary <- mpg %>% group_by(manufacturer) %>% summarize(Vehicle_Count=n(), .groups = 'keep') 
 
-mpg_summary <- mpg %>% group_by(manufacturer) %>% summarize(Vehicle_Count=n(), .groups = 'keep') #create summary table
-plt <- ggplot(mpg_summary,aes(x=manufacturer,y=Vehicle_Count)) #import dataset into ggplot2
-plt + geom_col() #plot a bar plot
+#import dataset into ggplot2
+plt <- ggplot(mpg_summary,aes(x=manufacturer,y=Vehicle_Count)) 
+
+#plot a bar plot
+plt + geom_col() 
 
 #plot bar plot with labels
 plt + geom_col() + xlab("Manufacturing Company") + ylab("Number of Vehicles in Dataset") 
 
+
+#----------------------------------------------------------------------------------------------------------------------------------------
 #plot a boxplot with labels
 plt + geom_col() + xlab("Manufacturing Company") + ylab("Number of Vehicles in Dataset") + 
   theme(axis.text.x=element_text(angle=45,hjust=1)) #rotate the x-axis label 45 degrees
 
+#----------------------------------------------------------------------------------------------------------------------------------------
 #create summary table
 mpg_summary <- subset(mpg,manufacturer=="toyota") %>% group_by(cyl) %>% summarize(Mean_Hwy=mean(hwy), .groups = 'keep') 
 
@@ -88,6 +96,8 @@ plt + geom_line() + scale_x_discrete(limits=c(4,6,8)) + scale_y_continuous(break
 #import dataset into ggplot2
 plt <- ggplot(mpg,aes(x=displ,y=cty)) 
 
+
+#----------------------------------------------------------------------------------------------------------------------------------------
 #add scatter plot with labels
 plt + geom_point() + xlab("Engine Size (L)") + ylab("City Fuel-Efficiency (MPG)") 
 
@@ -103,6 +113,8 @@ plt <- ggplot(mpg,aes(x=displ,y=cty,color=class,shape=drv))
 plt + geom_point() + 
   labs(x="Engine Size (L)", y="City Fuel-Efficiency (MPG)", color="Vehicle Class",shape="Type of Drive") 
 
+
+#----------------------------------------------------------------------------------------------------------------------------------------
 #import dataset into ggplot2
 plt <- ggplot(mpg,aes(y=hwy)) 
 #add boxplot
@@ -113,9 +125,87 @@ plt <- ggplot(mpg,aes(x=manufacturer,y=hwy))
 #add boxplot and rotate x-axis labels 45 degrees
 plt + geom_boxplot() + theme(axis.text.x=element_text(angle=45,hjust=1)) 
 
+<<<<<<< HEAD
 #------------------------------------------------------------------------------------------------------------------
 #statistics
 #visualize distribution using density plot
 ggplot(mtcars,aes(x=wt)) + geom_density() 
 
 shapiro.test(mtcars$wt)
+=======
+#----------------------------------------------------------------------------------------------------------------------------------------
+#create summary table
+mpg_summary <- mpg %>% group_by(class,year) %>% summarize(Mean_Hwy=mean(hwy), .groups = 'keep') 
+
+plt <- ggplot(mpg_summary, aes(x=class,y=factor(year),fill=Mean_Hwy))
+
+#create heatmap with labels
+plt + geom_tile() + labs(x="Vehicle Class",y="Vehicle Year",fill="Mean Highway (MPG)") 
+
+
+#----------------------------------------------------------------------------------------------------------------------------------------
+#create summary table
+mpg_summary <- mpg %>% group_by(model,year) %>% summarize(Mean_Hwy=mean(hwy), .groups = 'keep') 
+#import dataset into ggplot2
+plt <- ggplot(mpg_summary, aes(x=model,y=factor(year),fill=Mean_Hwy)) 
+
+#add heatmap with labels
+plt + geom_tile() + labs(x="Model",y="Vehicle Year",fill="Mean Highway (MPG)") + 
+  #rotate x-axis labels 90 degrees
+  theme(axis.text.x = element_text(angle=90,hjust=1,vjust=.5)) 
+
+#----------------------------------------------------------------------------------------------------------------------------------------  
+# 15.3.7 Add Layers to Plots
+# two types of plot layers: those that use same variables / input data as original, and those that use different but complementary data to original
+
+#import dataset into ggplot2
+plt <- ggplot(mpg,aes(x=manufacturer,y=hwy))
+
+#add boxplot
+plt + geom_boxplot() + 
+
+  #rotate x-axis labels 45 degrees
+  theme(axis.text.x=element_text(angle=45,hjust=1)) + 
+  #overlay scatter plot on top
+  geom_point() 
+
+
+# mapping argument functions exactly like ggplot() function
+#create summary table
+mpg_summary <- mpg %>% group_by(class) %>% summarize(Mean_Engine=mean(displ), .groups = 'keep') 
+
+#import dataset into ggplot2
+plt <- ggplot(mpg_summary,aes(x=class,y=Mean_Engine)) 
+
+#add scatter plot
+plt + geom_point(size=4) + labs(x="Vehicle Class",y="Mean Engine Size") 
+
+
+mpg_summary <- mpg %>% group_by(class) %>% summarize(Mean_Engine=mean(displ),SD_Engine=sd(displ), .groups = 'keep')
+
+#import dataset into ggplot2
+plt <- ggplot(mpg_summary,aes(x=class,y=Mean_Engine)) 
+
+#add scatter plot with labels
+plt + geom_point(size=4) + labs(x="Vehicle Class",y="Mean Engine Size") + 
+  
+  #overlay with error bars
+  geom_errorbar(aes(ymin=Mean_Engine-SD_Engine,ymax=Mean_Engine+SD_Engine)) 
+
+#This process of separating out plots for each level is known as faceting in ggplot2.
+#Faceting is performed by adding a facet() function to the end of our plotting statement. 
+
+#convert to long format
+mpg_long <- mpg %>% gather(key="MPG_Type",value="Rating",c(cty,hwy)) 
+head(mpg_long)
+
+#import dataset into ggplot2
+plt <- ggplot(mpg_long,aes(x=manufacturer,y=Rating,color=MPG_Type)) 
+#add boxplot with labels rotated 45 degrees
+plt + geom_boxplot() + theme(axis.text.x=element_text(angle=45,hjust=1)) 
+
+
+plt <- ggplot(mpg_long,aes(x=manufacturer,y=Rating,color=MPG_Type)) #import dataset into ggplot2
+plt + geom_boxplot() + facet_wrap(vars(MPG_Type)) + #create multiple boxplots, one for each MPG type
+theme(axis.text.x=element_text(angle=45,hjust=1),legend.position = "none") + xlab("Manufacturer") #rotate x-axis labels
+>>>>>>> 3eacf8456a5acbff1bf9da1734eec3ed75488ed6
