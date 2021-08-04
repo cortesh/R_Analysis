@@ -125,14 +125,13 @@ plt <- ggplot(mpg,aes(x=manufacturer,y=hwy))
 #add boxplot and rotate x-axis labels 45 degrees
 plt + geom_boxplot() + theme(axis.text.x=element_text(angle=45,hjust=1)) 
 
-<<<<<<< HEAD
 #------------------------------------------------------------------------------------------------------------------
 #statistics
 #visualize distribution using density plot
 ggplot(mtcars,aes(x=wt)) + geom_density() 
 
 shapiro.test(mtcars$wt)
-=======
+
 #----------------------------------------------------------------------------------------------------------------------------------------
 #create summary table
 mpg_summary <- mpg %>% group_by(class,year) %>% summarize(Mean_Hwy=mean(hwy), .groups = 'keep') 
@@ -208,4 +207,47 @@ plt + geom_boxplot() + theme(axis.text.x=element_text(angle=45,hjust=1))
 plt <- ggplot(mpg_long,aes(x=manufacturer,y=Rating,color=MPG_Type)) #import dataset into ggplot2
 plt + geom_boxplot() + facet_wrap(vars(MPG_Type)) + #create multiple boxplots, one for each MPG type
 theme(axis.text.x=element_text(angle=45,hjust=1),legend.position = "none") + xlab("Manufacturer") #rotate x-axis labels
->>>>>>> 3eacf8456a5acbff1bf9da1734eec3ed75488ed6
+
+#---------------------------------------------------------------------------------------------------------------------------------------
+# 15.6.1 Samples vs Pop
+
+# use 'used vehicle dataset'
+population_table <- read.csv('used_car_data.csv',check.names = F,stringsAsFactors = F) #import used car dataset
+plt <- ggplot(population_table,aes(x=log10(Miles_Driven))) #import dataset into ggplot2
+plt + geom_density() #visualize distribution using density plot
+
+sample_table <- population_table %>% sample_n(50) #randomly sample 50 data points
+plt <- ggplot(sample_table,aes(x=log10(Miles_Driven))) #import dataset into ggplot2
+plt + geom_density() #visualize distribution using density plot
+
+#---------------------------------------------------------------------------------------------------------------------------------------
+# 15.6.2 Use the One-Sample t-Test
+
+#compare sample versus population means
+t.test(log10(sample_table$Miles_Driven),mu=mean(log10(population_table$Miles_Driven))) 
+
+
+#---------------------------------------------------------------------------------------------------------------------------------------
+# 15.6.3 Use the Two-Sample t-Test
+
+# first generate samples
+sample_table <-population_table %>%sample_n(50)#generate 50 randomly sampled data points
+sample_table2 <-population_table %>%sample_n(50)#generate another 50 randomly sampled data points
+
+# now run test
+t.test(log10(sample_table$Miles_Driven),log10(sample_table2$Miles_Driven)) #compare means of two samples
+
+#---------------------------------------------------------------------------------------------------------------------------------------
+# 15.6.4 Use the Two-Sample t-Test to Compare Samples
+
+# test two samples using pair t-test.
+
+#import dataset
+mpg_data <- read.csv('mpg_modified.csv')
+#select only data points where the year is 1999
+mpg_1999 <- mpg_data %>% filter(year==1999)
+#select only data points where the year is 2008
+mpg_2008 <- mpg_data %>% filter(year==2008) 
+
+#compare the mean difference between two samples
+t.test(mpg_1999$hwy,mpg_2008$hwy,paired = T) 
