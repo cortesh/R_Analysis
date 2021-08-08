@@ -251,3 +251,80 @@ mpg_2008 <- mpg_data %>% filter(year==2008)
 
 #compare the mean difference between two samples
 t.test(mpg_1999$hwy,mpg_2008$hwy,paired = T) 
+
+#---------------------------------------------------------------------------------------------------------------------------------------
+# 15.6.5 Use the ANOVA Test
+
+#filter columns from mtcars dataset
+mtcars_filt <- mtcars[,c("hp","cyl")] 
+#convert numeric column to factor
+mtcars_filt$cyl <- factor(mtcars_filt$cyl) 
+
+#compare means across multiple levels
+aov(hp ~ cyl,data=mtcars_filt) 
+
+#initial output of our aov() function does not contain our p-values. 
+#To retrieve our p-values, we have to wrap our aov()function in a summary() function
+summary(aov(hp ~ cyl,data=mtcars_filt))
+
+#---------------------------------------------------------------------------------------------------------------------------------------
+# 15.7.1 The Correlation Conundrum
+
+#import dataset into ggplot2
+plt <- ggplot(mtcars,aes(x=hp,y=qsec)) 
+
+#create scatter plot
+plt + geom_point() 
+
+#calculate correlation coefficient
+cor(mtcars$hp,mtcars$qsec) 
+
+#read in dataset
+used_cars <- read.csv('used_car_data.csv',stringsAsFactors = F) 
+head(used_cars)
+
+#import dataset into ggplot2
+plt <- ggplot(used_cars,aes(x=Miles_Driven,y=Selling_Price)) 
+#create a scatter plot
+plt + geom_point() 
+
+#calculate correlation coefficient
+cor(used_cars$Miles_Driven,used_cars$Selling_Price) 
+
+used_matrix <- as.matrix(used_cars[,c("Selling_Price","Present_Price","Miles_Driven")]) #convert data frame into numeric matrix
+cor(used_matrix)
+
+#---------------------------------------------------------------------------------------------------------------------------------------
+# 15.7.2 Return to Linear Regression
+
+#create linear model
+lm(qsec ~ hp,mtcars) 
+
+#summarize linear model
+summary(lm(qsec~hp,mtcars)) 
+
+#create linear model
+model <- lm(qsec ~ hp,mtcars) 
+yvals <- model$coefficients['hp']*mtcars$hp +
+  model$coefficients['(Intercept)'] #determine y-axis values from linear model
+
+#import dataset into ggplot2
+plt <- ggplot(mtcars,aes(x=hp,y=qsec)) 
+#plot scatter and linear model
+plt + geom_point() + geom_line(aes(y=yvals), color = "red") 
+
+#---------------------------------------------------------------------------------------------------------------------------------------
+#15.7.3 Perform Multiple Linear Regression
+
+#generate multiple linear regression model
+lm(qsec ~ mpg + disp + drat + wt + hp,data=mtcars) 
+
+#generate summary statistics
+summary(lm(qsec ~ mpg + disp + drat + wt + hp,data=mtcars)) 
+
+#---------------------------------------------------------------------------------------------------------------------------------------
+#15.8.1 Category Complexities
+table(mpg$class,mpg$year) #generate contingency table
+
+tbl <- table(mpg$class,mpg$year) #generate contingency table
+chisq.test(tbl) #compare categorical distributions
